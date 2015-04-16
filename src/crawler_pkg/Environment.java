@@ -41,10 +41,20 @@ public class Environment {
         
         flag = parameters.substring(1,2);
         
+        /*
+         * Parse flags
+         * 
+         * -f gets file name of seeds text file
+         * -h gets maximum number of hops
+         * -p gets maximum number of pages
+         * -o gets the output directory for saving downloaded pages
+         * -t gets maximum number of threads to instantiate
+         * -r sets to ignore robots.txt when crawling a domain
+         */
         switch (flag) {
           
           case "f":
-            // Get input file name
+            // seeds file
             inputFile = args[i+1];
           break;
 
@@ -55,12 +65,12 @@ public class Environment {
           break;
           
           case "p":
-            // Get hopCount
+            // ceiling of pages to crawl
             maxPages = Integer.parseInt(args[i+1]);
           break;
           
           case "o":
-            // Get hopCount
+            // Save directory
             outputDir = args[i+1];
           break;
           
