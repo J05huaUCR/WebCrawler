@@ -1,12 +1,14 @@
 /*  =============================================================================
-  Spider Class contains instance of a single spider to crawl a URL document
+  Crawler Class contains instance of a single crawler to crawl a URL document
   for links to other documents.
   
   @version  0.1
   @author   Joshua Potter
   @studentID  860159747
-  @classID  CS172
-  @title    Web Crawler Project
+  @author   Ashwin
+  @studentID  861------
+  @classID  CS242
+  @title    Crawler Project
   ========================================================================== */
 
 package crawler_pkg;
@@ -28,27 +30,25 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class Crawler {
-//Class Variables
- public static int crawlerID;
- public static URL crawlerURL;
- public static int crawlerHopCount;
- public static String crawlerDateTime;
- public static Queue< CrawlURLObj > spiderFrontier = new LinkedList< CrawlURLObj >(); // frontier queue
+  //Class Variables
+  public static int crawlerID;
+  public static URL crawlerURL;
+  public static int crawlerHopCount;
+  public static String crawlerDateTime;
+  public static Queue< CrawlURLObj > spiderFrontier = new LinkedList< CrawlURLObj >(); // frontier queue
  
- // Constructor
- public Crawler(int id, String url, int hop, HashMap<String, Integer> visited, Environment appEnv) throws MalformedURLException{
-   crawlerID = id;
-   crawlerURL = new URL(url);
-   crawlerHopCount = hop;
-   
-   // Get Datetime
-   DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-   Date date = new Date();
-   crawlerDateTime = dateFormat.format(date);
-   outputVars();
- };
- 
- // Methods
+  // Constructor
+  public Crawler(int id, String url, int hop, HashMap<String, Integer> visited, Environment appEnv) throws MalformedURLException{
+    crawlerID = id;
+    crawlerURL = new URL(url);
+    crawlerHopCount = hop;
+     
+    // Get Datetime
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+    Date date = new Date();
+    crawlerDateTime = dateFormat.format(date);
+    outputVars();
+  };
 
  /*
   * Outputs the vars in this Spider
@@ -68,8 +68,7 @@ public class Crawler {
   * extracts and cleans links and puts them in the frontier
   */
  public static void downloadHTML(Queue< CrawlURLObj > frontier, Environment appEnv, HashMap<String, Integer> visited) throws IOException {
-   //System.out.println("Spider " + spiderID + " calling downloadHTML with URL: " + spiderURL.toString());
-
+ 
    // Seed Spider Frontier with URL passed in
    String tempSpiderURL = crawlerURL.toString();
    try {
@@ -81,9 +80,7 @@ public class Crawler {
      // Get the HTML content
      String htmlContent = doc.html();
      
-     /*
-      * extract links and add them to the URL Queue (if not crawled yet)
-      */
+     // extract links and add them to the URL Queue (if not crawled yet)
      Elements urlLinks = doc.select("a[href]");  
      for (int i = 0; i < urlLinks.size(); i++) {
        
@@ -128,9 +125,9 @@ public class Crawler {
    }
  }
  
- /* Normalizing with java.net.URL
-  * http://docs.oracle.com/javase/7/docs/api/java/net/URL.html
- */
+   /* Normalizing with java.net.URL
+    * http://docs.oracle.com/javase/7/docs/api/java/net/URL.html
+    */
    public static String cleanURL(URL url) {
      
      String urlCheck = url.toString();
@@ -143,32 +140,29 @@ public class Crawler {
      /* Check for non-web pages */
      String extension = urlCheck.substring(urlCheck.lastIndexOf(".") + 1, urlCheck.length());
      if (extension.equals("pdf") ||
-     extension.equals("doc") ||
-     extension.equals("mp3") ||
-     extension.equals("mp4") ||
-     extension.equals("mpeg") ||
-     extension.equals("avi") ||
-     extension.equals("swf") ||
-     extension.equals("css") ||
-     extension.equals("java") ||
-     extension.equals("jar") ||
-     extension.equals("c") ||
-     extension.equals("cc") ||
-     extension.equals("cpp") ||
-     extension.equals("exe") ||
-     extension.equals("xls") ||
-     extension.equals("docx") ||
-     extension.equals("xlsx") ||
-     extension.equals("ppt") ||
-     extension.equals("pptx") ||
-     extension.equals("pps")     ) {
+         extension.equals("doc") ||
+         extension.equals("mp3") ||
+         extension.equals("mp4") ||
+         extension.equals("mpeg") ||
+         extension.equals("avi") ||
+         extension.equals("swf") ||
+         extension.equals("css") ||
+         extension.equals("java") ||
+         extension.equals("jar") ||
+         extension.equals("c") ||
+         extension.equals("cc") ||
+         extension.equals("cpp") ||
+         extension.equals("exe") ||
+         extension.equals("xls") ||
+         extension.equals("docx") ||
+         extension.equals("xlsx") ||
+         extension.equals("ppt") ||
+         extension.equals("pptx") ||
+         extension.equals("pps")     ) {
        System.err.println("THIS URL FLAGGED: " + extension);
        return "";
      }
-     
-     // Check for query parameters
-     //System.out.println("query: " + url.getQuery());
-     
+    
      return urlCheck;
    }
    
@@ -177,27 +171,24 @@ public class Crawler {
     */
    public static int writeHTMLdoc(String htmlDoc, Environment appEnv){
      BufferedWriter fileWriter = null;
-   try {
-     fileWriter = new BufferedWriter( 
-            new FileWriter( 
-                appEnv.getOutputPath() + 
-                crawlerDateTime + "_" + 
-                (crawlerHopCount * 100000 + crawlerID) +
-                  "_output.html")); // file name
-     fileWriter.write(htmlDoc);
-   } catch ( IOException e) {
-     System.err.println("Error in writeHTMLdoc: " + e);
-   } finally {
-       try {
-           if ( fileWriter != null)
-             fileWriter.close( );
-       } catch ( IOException e) {
-         System.err.println("Error when closing writeHTMLdoc: " + e);
-       }
-   }
+     try {
+       fileWriter = new BufferedWriter( 
+              new FileWriter( 
+                  appEnv.getOutputPath() + 
+                  crawlerDateTime + "_" + 
+                  (crawlerHopCount * 100000 + crawlerID) +
+                    "_output.html")); // file name
+       fileWriter.write(htmlDoc);
+     } catch ( IOException e) {
+       System.err.println("Error in writeHTMLdoc: " + e);
+     } finally {
+         try {
+             if ( fileWriter != null)
+               fileWriter.close( );
+         } catch ( IOException e) {
+           System.err.println("Error when closing writeHTMLdoc: " + e);
+         }
+     }
      return 0;
-   }
-  
-
-
+   } // end writeHtmlDoc
 }

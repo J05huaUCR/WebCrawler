@@ -4,8 +4,10 @@
   @version  0.1
   @author   Joshua Potter
   @studentID  860159747
-  @classID  CS172
-  @title    Web Crawler Project
+  @author   Ashwin
+  @studentID  861------
+  @classID  CS242
+  @title    Crawler Project
   ========================================================================== */
 
 package crawler_pkg;
@@ -20,16 +22,16 @@ public class CrawlURLObj {
     hop = HOP;
   }
   
-  public void print() {
-    System.out.println( url + ", " + hop);
-  }
-  
   public String getURL() {
     return url;
   }
   
   public int getHop(){
     return hop;
+  }
+  
+  public void print() {
+    System.out.println( url + ", " + hop);
   }
   
 }

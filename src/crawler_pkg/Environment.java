@@ -16,15 +16,16 @@ import java.io.File;
 
 public class Environment {
   
-  // Object Parameters
+  // Application Parameters
   String inputFile = ""; // Input file path/name
   String outputDir = "output"; // Name of output directory passed in ("output" default)
-  String outputPath = outputDir + "/";
+  String outputPath = outputDir + "/"; // Sets output path
   int maxHops = 0; // Number of hops (if passed in, 0 is default
   int maxPages = 0; // Maximum number of pages to crawl
   int maxThreads = 10; // Maximum number of threads to instantiate
   int numThreads = 0; // Count of active Threads
   int numPages = 1; // Tracking number of pages visited
+  int numFiles = 0; // The number of output files to coalesce too, 0 = default, 1 file each page
   boolean heedRobotsTxt = true; // Flag to read and adhere to robots.txt
   
   // Constructor
@@ -42,12 +43,13 @@ public class Environment {
         flag = parameters.substring(1,2);
         
         /*
-         * Parse flags
+         * Application flags
          * 
          * -f gets file name of seeds text file
          * -h gets maximum number of hops
          * -p gets maximum number of pages
          * -o gets the output directory for saving downloaded pages
+         * -s sets the number of files to split the downloads across
          * -t gets maximum number of threads to instantiate
          * -r sets to ignore robots.txt when crawling a domain
          */
@@ -74,6 +76,11 @@ public class Environment {
             outputDir = args[i+1];
           break;
           
+          case "s":
+            // Save directory
+            numFiles = Integer.parseInt(args[i+1]);
+          break;
+          
           case "t":
             // Get thread count + 1 to account for main executable Thread
             maxThreads = Integer.parseInt(args[i+1]) + 1;
@@ -86,8 +93,7 @@ public class Environment {
         }
       }
     }   
-    
-  };
+  }; // END Constructor
   
   public int init() {
     
@@ -108,6 +114,7 @@ public class Environment {
           theDir.mkdir();
           result = true;
       } catch(SecurityException se){
+        System.err.println("Output directory not created.");  
         return -2;
       }        
        
@@ -117,7 +124,7 @@ public class Environment {
     }
     
     return 0;
-  }
+  } // END init
   
   public String getInputFileName() {
     return inputFile;
@@ -172,6 +179,7 @@ public class Environment {
     System.out.println("Parameters processed:");
     System.out.println("inputFile = " + inputFile);
     System.out.println("outputDir = " + outputDir);
+    System.out.println("numFiles = " + numFiles);
     System.out.println("maxPages = " + maxPages);
     System.out.println("maxHops = " + maxHops);
     System.out.println("maxThreads = " + maxThreads);

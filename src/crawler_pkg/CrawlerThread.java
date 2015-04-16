@@ -1,3 +1,15 @@
+/*  =============================================================================
+  Thread creation to instantiate each Crawler
+  
+  @version  0.1
+  @author   Joshua Potter
+  @studentID  860159747
+  @author   Ashwin
+  @studentID  861------
+  @classID  CS242
+  @title    Crawler Project
+  ========================================================================== */
+
 package crawler_pkg;
 
 import java.io.IOException;
@@ -13,34 +25,27 @@ public class CrawlerThread extends Thread {
   private boolean threadAlive = false;
   
   // Constructor
-  CrawlerThread( String name){
+  CrawlerThread( String name ){
       threadName = name;
-      //System.out.println("Creating " +  threadName );
-      
   }
   
   // Runnable
   public void run() {
-     //System.out.println("Running " +  threadName );
-     try {
-       /*
-        * Desired actions for the Thread
-        */
-      threadSpider.outputVars();
-      
-     Thread.sleep(3000);
-
+    try {
+       threadSpider.outputVars();
+       Thread.sleep(3000);
     } catch (InterruptedException e) {
         System.err.println("Thread " +  threadName + " interrupted.");
     }
-     
-     // Will exit thread here
-   
   }
   
   // Starter
-  public void start (CrawlURLObj url, Queue< CrawlURLObj > frontier, HashMap<String, Integer> visited, Environment appEnv) throws IOException {
-     //System.out.println("Starting " +  threadName );
+  public void start (
+        CrawlURLObj url, 
+        Queue< CrawlURLObj > frontier, 
+        HashMap<String, Integer> visited, 
+        Environment appEnv
+        ) throws IOException {
      threadURL = url.getURL();
      threadHopCount = url.getHop();
      appEnv.increasePageCount();

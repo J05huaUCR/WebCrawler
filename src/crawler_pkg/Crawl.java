@@ -28,10 +28,12 @@ public class Crawl {
     Environment appEnv = new Environment(args);
     if (appEnv.init() < 0) {
       System.err.println("Errors setting up environment. Exiting.");
+      System.exit(appEnv.init());
     }
     
     // Display Vars
     appEnv.printVars();
+    System.exit(0);
 
     Queue<CrawlURLObj> frontier = new LinkedList<CrawlURLObj>(); // frontier queue
     HashMap<String, Integer> visited = new HashMap<String, Integer>(); // need visited hashtable
