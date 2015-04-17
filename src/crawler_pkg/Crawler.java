@@ -22,7 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
+//import java.util.LinkedList;
 import java.util.Queue;
 
 import org.jsoup.Jsoup;
@@ -30,12 +30,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class Crawler {
+  
   //Class Variables
   public static int crawlerID;
   public static URL crawlerURL;
   public static int crawlerHopCount;
   public static String crawlerDateTime;
-  public static Queue< CrawlURLObj > spiderFrontier = new LinkedList< CrawlURLObj >(); // frontier queue
+  //public static Queue< CrawlURLObj > spiderFrontier = new LinkedList< CrawlURLObj >(); // frontier queue
  
   // Constructor
   public Crawler(int id, String url, int hop, HashMap<String, Integer> visited, Environment appEnv) throws MalformedURLException{
@@ -50,8 +51,9 @@ public class Crawler {
     outputVars();
   };
 
- /*
-  * Outputs the vars in this Spider
+ /* ==========================================================
+  * Outputs the variables in this Crawler
+  * ==========================================================
   */
  public void outputVars() {
    System.out.println("Crawler Variables:");  
@@ -60,22 +62,22 @@ public class Crawler {
    System.out.println("URL: " + crawlerURL.toString()); 
    System.out.println("Hop #: " + crawlerHopCount); 
    System.out.println("DateTime: " + crawlerDateTime); 
-   //System.out.println("spiderFrontier Size: " + spiderFrontier.size() + "\n"); 
  }
  
- /*
+ /* ==========================================================
   * Downloads the URL passed in and writes to disk
   * extracts and cleans links and puts them in the frontier
+  * ========================================================== 
   */
  public static void downloadHTML(Queue< CrawlURLObj > frontier, Environment appEnv, HashMap<String, Integer> visited) throws IOException {
  
    // Seed Spider Frontier with URL passed in
-   String tempSpiderURL = crawlerURL.toString();
+   String tempCrawlerURL = crawlerURL.toString();
    try {
-     Document doc = Jsoup.connect( tempSpiderURL ).timeout(3000).get();
+     Document doc = Jsoup.connect( tempCrawlerURL ).timeout(3000).get();
      
      // Place url in visited HashMap
-     visited.put(tempSpiderURL, tempSpiderURL.hashCode() );
+     visited.put(tempCrawlerURL, tempCrawlerURL.hashCode() );
      
      // Get the HTML content
      String htmlContent = doc.html();
@@ -125,8 +127,10 @@ public class Crawler {
    }
  }
  
-   /* Normalizing with java.net.URL
+   /* ==========================================================
+    * Normalizing with java.net.URL
     * http://docs.oracle.com/javase/7/docs/api/java/net/URL.html
+    * ==========================================================
     */
    public static String cleanURL(URL url) {
      
@@ -166,8 +170,9 @@ public class Crawler {
      return urlCheck;
    }
    
-   /*
+   /* ==========================================================
     * Saves HTML file to output folder 
+    * ==========================================================
     */
    public static int writeHTMLdoc(String htmlDoc, Environment appEnv){
      BufferedWriter fileWriter = null;

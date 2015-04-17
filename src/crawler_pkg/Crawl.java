@@ -24,50 +24,61 @@ public class Crawl {
 
   public static void main(String[] args) {
     
-    // Instantiate Environment
-    Environment appEnv = new Environment(args);
-    if (appEnv.init() < 0) {
-      System.err.println("Errors setting up environment. Exiting.");
-      System.exit(appEnv.init());
-    }
-    
-    // Display Vars
-    appEnv.printVars();
-    System.exit(0);
-
-    Queue<CrawlURLObj> frontier = new LinkedList<CrawlURLObj>(); // frontier queue
-    HashMap<String, Integer> visited = new HashMap<String, Integer>(); // need visited hashtable
+    /* 
+     * ===================================================================
+     * Instantiate Application Environment
+     * ===================================================================
+     */
     int numURLs = 0; // Count of URL's processed
     int hopCount = 1; // Hops from Source (starts @ 1 due to output naming convention)
+    Queue<CrawlURLObj> crawlerFrontier = new LinkedList<CrawlURLObj>(); // frontier queue
+    HashMap<String, Integer> visitedURLs = new HashMap<String, Integer>(); // need visited hashtable
+    Environment appEnv = new Environment(args);
     
-    // Read inputFile and populate frontier
-    try(BufferedReader seedReader = new BufferedReader( new FileReader( appEnv.getInputFileName() ))) {
+    if (appEnv.init() < 0) {
       
-        // Open input file and parse to Frontier queue
-        String line = seedReader.readLine();
-        while (line != null) {
-          frontier.add( new CrawlURLObj(line,hopCount));  
-          line = seedReader.readLine();
-        }
-    } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+      System.err.println("Errors setting up environment. Exiting.");
+      System.exit(appEnv.init());
+      
+    } else {
+      
+      // Display Vars
+      appEnv.printVars();
+      //System.exit(0);
 
-    /*
+      // Read inputFile and populate frontier
+      try(BufferedReader seedReader = new BufferedReader( new FileReader( appEnv.getInputFileName() ))) {
+        
+          // Open input file and parse to Frontier queue
+          String line = seedReader.readLine();
+          while (line != null) {
+            crawlerFrontier.add( new CrawlURLObj(line,hopCount));  
+            line = seedReader.readLine();
+          }
+      } catch (FileNotFoundException e) {
+        System.err.println("Errors:");
+        e.printStackTrace();
+      } catch (IOException e) {
+        System.err.println("Errors:");
+        e.printStackTrace();
+      }
+      
+    }
+    
+    /* 
+     * ===================================================================
      * Multithreading Section
+     * ===================================================================
      */
-    CrawlerThread[] threads = new CrawlerThread[appEnv.getMaxThreads()]; // set up thread array
     
     // init thread array
+    CrawlerThread[] threads = new CrawlerThread[ appEnv.getMaxThreads() ];
     for (int i = 0; i < appEnv.getMaxThreads(); ++i) { 
       threads[i] = new CrawlerThread(("thread" + i));
     }
     
-    while (!frontier.isEmpty()) {
+    // Main Processing of frontier
+    while (!crawlerFrontier.isEmpty()) {
       
       // traverse thread array looking for available threads
       for (int i = 0; i < appEnv.getMaxThreads(); ++i) { 
@@ -75,31 +86,28 @@ public class Crawl {
         // if there are available threads and files left to parse
         if ( !threads[i].alive() ) {
           
-          // instantiated new threads if there are files remaining
-          //threadName = "threadID: " + numURLs;
+          // instantiate new threads if there are files remaining
           threads[i] = new CrawlerThread("thread" + numURLs);
           try {
-            threads[i].start(frontier.poll(), frontier, visited, appEnv);
+            threads[i].start(crawlerFrontier.poll(), crawlerFrontier, visitedURLs, appEnv);
           } catch (IOException e) {
-            // TODO Auto-generated catch block
+            System.err.println("Errors:");
             e.printStackTrace();
           }
           numURLs++;
           
-          //WebCrawlerThread wcThread = new WebCrawlerThread("wcThread");
-          //wcThread.start(frontier.poll(), frontier, visited, crawlerEnv);
-          System.out.println("FRONTIER SIZE: " + frontier.size());
+          //System.out.println("FRONTIER SIZE: " + frontier.size());
         }
       }
     }
     
+    // Poll living threads until all completed.
     while (Thread.activeCount() > 1) {
       //wait until program thread last running
     }
-    //System.out.println("ThreadCount at end: " + Thread.activeCount());
     
     // End.
-    System.out.println("...done.");
+    System.out.println("Crawler done. " + numURLs + " URL's processed.");
   }
 
 }
