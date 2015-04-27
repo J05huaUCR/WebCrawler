@@ -91,7 +91,12 @@ public class Crawler {
        
        // Clean and validate URLs
        String url = cleanURL(tempURL);
-       if ( url.length() > 0 ) {
+       
+       /* Check for same host
+        * Check if already visited and only 
+        * Add to frontier and with an increased hop if not visited
+        */
+       if ( url.length() > 0 && !visited.containsKey(url) ) {
          
          /*
           * Check robots.txt?
@@ -100,35 +105,23 @@ public class Crawler {
            if ( RobotExclusionUtil.robotsShouldFollow(url) ) {
              System.out.println("NO BOTS ALLOWED FOR THIS URL: " + url);
            } else {
-             // blah
+             frontier.add(new CrawlURLObj(url, crawlerHopCount + 1));
+             System.out.println("URL added to Frontier: " + url);
            }
-         }
-         
-         /* Check for same host
-          * Check if already visited and only 
-          * Add to frontier and with an increased hop if not visited
-          */
-
-         if (!visited.containsKey(url)) {
+         } else {
            frontier.add(new CrawlURLObj(url, crawlerHopCount + 1));
            System.out.println("URL added to Frontier: " + url);
-           /*
-           // add to spider's Frontier if the same host
-           if (spiderURL.getHost().equals(hostURL) ) {
-             spiderFrontier.add(new hopURL(url,spiderHop));
-             System.out.println("URL added to spiderFrontier: " + url);
-           } else { // different host add to main frontier
-             frontier.add(new hopURL(spiderURL.toString(), spiderHop + 1));
-           }
-           */
-         } else {
-           System.err.println("Already visited: " + url);
          }
+
+       } else {
+         System.err.println("Already visited: " + url);
        }
      }
      
      // Write to Disk
+     // <<<<<<<<<<<<<<<<<<<<<<<<<< NEED TO ADD IN URL of DOC in the DOC
      writeHTMLdoc(htmlContent, appEnv);
+     
    } catch (IOException| NullPointerException ee) {
      //ee.printStackTrace();
    }
