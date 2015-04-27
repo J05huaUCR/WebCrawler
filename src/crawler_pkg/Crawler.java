@@ -71,7 +71,7 @@ public class Crawler {
   */
  public static void downloadHTML(Queue< CrawlURLObj > frontier, Environment appEnv, HashMap<String, Integer> visited) throws IOException {
  
-   // Seed Spider Frontier with URL passed in
+   // Seed Crawler Frontier with URL passed in
    String tempCrawlerURL = crawlerURL.toString();
    try {
      Document doc = Jsoup.connect( tempCrawlerURL ).timeout(3000).get();
@@ -91,17 +91,24 @@ public class Crawler {
        
        // Clean and validate URLs
        String url = cleanURL(tempURL);
-       
-       //RobotExclusionUtil.robotsShouldFollow(url);
        if ( url.length() > 0 ) {
-         // Check for same host
-         /*
-         if ( RobotExclusionUtil.robotsShouldFollow(url) ) {
-           System.out.println("NO BOTS ALLOWED FOR THIS URL: " + url);
-         }*/
          
-         // Check if already visited and only 
-         // Add to frontier and with an increased hop if not visited
+         /*
+          * Check robots.txt?
+          */
+         if ( appEnv.listenToRobotsTxt() ) {
+           if ( RobotExclusionUtil.robotsShouldFollow(url) ) {
+             System.out.println("NO BOTS ALLOWED FOR THIS URL: " + url);
+           } else {
+             // blah
+           }
+         }
+         
+         /* Check for same host
+          * Check if already visited and only 
+          * Add to frontier and with an increased hop if not visited
+          */
+
          if (!visited.containsKey(url)) {
            frontier.add(new CrawlURLObj(url, crawlerHopCount + 1));
            System.out.println("URL added to Frontier: " + url);
