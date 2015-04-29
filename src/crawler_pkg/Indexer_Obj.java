@@ -1,3 +1,16 @@
+/*  =============================================================================
+  The Class that implements the Lucene indexer using the data passed in
+  from the Indexed HTML
+  
+  @version  0.1
+  @author   Joshua Potter
+  @SID      860159747
+  @author   Ashwin Ramadevanahalli
+  @SID      861186399
+  @classID  CS242
+  @title    Crawler & Indexer Project
+  ========================================================================== */
+
 package crawler_pkg;
 
 import java.io.File;
@@ -15,18 +28,6 @@ import org.apache.lucene.util.Version;
 import crawler_pkg.Indexer_IndexedHTML;
 
 public class Indexer_Obj {
-  
-  //public static final String INDEX_DIR = "testIndex";
-  
-  /*
-  public static void main(String[] args) throws CorruptIndexException, IOException {
-    IndexerHTMLdoc page = new IndexerHTMLdoc("This is test Title 1", "body of the test web page", "http://www.dummy.edu");
-    index(page);    
-    page = new IndexerHTMLdoc("This is test Title 2", "This is another test", "http://www.dummy.edu");
-    index(page);    
-    search("test", 5);
-  }
-  */
   
   public Indexer_Obj(){
     // Default Constructor

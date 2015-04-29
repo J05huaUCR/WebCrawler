@@ -3,11 +3,11 @@
   
   @version  0.1
   @author   Joshua Potter
-  @studentID  860159747
-  @author   Ashwin
-  @studentID  861------
+  @SID      860159747
+  @author   Ashwin Ramadevanahalli
+  @SID      861186399
   @classID  CS242
-  @title    Crawler Project
+  @title    Crawler & Indexer Project
   ========================================================================== */
 
 package crawler_pkg;

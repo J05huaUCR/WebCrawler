@@ -1,3 +1,16 @@
+/*  =============================================================================
+  Object Class to implement the Jericho HTML parser to pull data from the
+  parsed HTML document
+  
+  @version  0.1
+  @author   Joshua Potter
+  @SID      860159747
+  @author   Ashwin Ramadevanahalli
+  @SID      861186399
+  @classID  CS242
+  @title    Crawler & Indexer Project
+  ========================================================================== */
+
 package crawler_pkg;
 
 import java.io.IOException;
@@ -48,33 +61,19 @@ public class Indexer_Parser {
     indexPage.setID(id);
 
     String title=getTitle(source);
-   // System.out.println("Document title:"); 
-   // System.out.println(title==null ? "(none)" : title);
     indexPage.setTitle(title);
 
     String description=getMetaValue(source,"description");
-    //System.out.println("\nDocument description:");
-    //System.out.println(description==null ? "(none)" : description);
     indexPage.setDesc(description);
 
     String keywords=getMetaValue(source,"keywords");
-    //System.out.println("\nDocument keywords:");
-   // System.out.println(keywords==null ? "(none)" : keywords);
     indexPage.setKeywords(keywords);
   
-    //System.out.println("\nLinks to other documents:");
     List<Element> linkElements=source.getAllElements(HTMLElementName.A);
     for (Element linkElement : linkElements) {
       String href=linkElement.getAttributeValue("href");
       if (href==null) continue;
-      // A element can contain other tags so need to extract the text from it:
-      //String label=linkElement.getContent().getTextExtractor().toString();
-      //System.out.println(label+" <"+href+'>');
     }
-    
-    //System.out.println("\nAll text from file (exluding content inside SCRIPT and STYLE elements):\n");
-   // System.out.println(source.getTextExtractor().setIncludeAttributes(true).toString());
-    //indexPage.setBody(source.getTextExtractor().setIncludeAttributes(true).toString());
     
     /*
      * System.out.println("\nSame again but this time extend the TextExtractor class 
@@ -87,11 +86,9 @@ public class Indexer_Parser {
       }
     };
     indexPage.appendBody(textExtractor.setIncludeAttributes(true).toString());
-
-    //System.out.println(textExtractor.setIncludeAttributes(true).toString());
     
     Indexer_Obj.index(indexPage, indexPath);
-    /**/
+
     return indexPage;
   }
   

@@ -3,11 +3,11 @@
   
   @version  0.1
   @author   Joshua Potter
-  @studentID  860159747
-  @author   Ashwin
-  @studentID  861------
+  @SID      860159747
+  @author   Ashwin Ramadevanahalli
+  @SID      861186399
   @classID  CS242
-  @title    Crawler Project
+  @title    Crawler & Indexer Project
   ========================================================================== */
 
 package crawler_pkg;
@@ -18,13 +18,14 @@ public class Environment {
   
   // Application Parameters
   String inputFile = ""; // Input file path/name
+  String inputDir = ""; // Name of output directory passed in ("output" default)
   String outputDir = "output"; // Name of output directory passed in ("output" default)
   String outputPath = outputDir + "/"; // Sets output path
   int maxHops = 0; // Number of hops (if passed in, 0 is default
   int maxPages = 0; // Maximum number of pages to crawl
   int maxThreads = 10; // Maximum number of threads to instantiate
   int numThreads = 0; // Count of active Threads
-  int numPages = 1; // Tracking number of pages visited
+  int numPages = 1; // Tracking number of pages processed
   int numFiles = 0; // The number of output files to coalesce too, 0 = default, 1 file each page
   boolean heedRobotsTxt = true; // Flag to read and adhere to robots.txt
   
@@ -69,6 +70,11 @@ public class Environment {
           case "p":
             // ceiling of pages to crawl
             maxPages = Integer.parseInt(args[i+1]);
+          break;
+          
+          case "i":
+            // Input directory
+            inputDir = args[i+1];
           break;
           
           case "o":
@@ -130,6 +136,10 @@ public class Environment {
     return inputFile;
   }
   
+  public String getInputDir() {
+    return inputDir;
+  }
+  
   public String getOutputDir() {
     return outputDir;
   }
@@ -178,6 +188,7 @@ public class Environment {
     // Verification
     System.out.println("Parameters processed:");
     System.out.println("inputFile = " + inputFile);
+    System.out.println("inputDir = " + inputDir);
     System.out.println("outputDir = " + outputDir);
     System.out.println("numFiles = " + numFiles);
     System.out.println("maxPages = " + maxPages);

@@ -1,3 +1,15 @@
+/*  =============================================================================
+  Main driver routine for the Indexer application
+  
+  @version  0.1
+  @author   Joshua Potter
+  @SID      860159747
+  @author   Ashwin Ramadevanahalli
+  @SID      861186399
+  @classID  CS242
+  @title    Crawler & Indexer Project
+  ========================================================================== */
+
 package crawler_pkg;
 
 import java.io.File;
@@ -5,76 +17,54 @@ import java.io.File;
 import crawler_pkg.Indexer_Obj;
 import crawler_pkg.Indexer_IndexedHTML;
 import crawler_pkg.Indexer_Parser;
+import crawler_pkg.Environment;
 
 public class Indexer {
-public static void main(String[] args) throws Exception {
+  
+  public static void main(String[] args) throws Exception {
     
     /* 
      * Begin timer
      */
+    final float NANO2SEC = 1000000000; // for converting nanoseconds to seconds
     float startTime = System.nanoTime();
     float endTime = System.nanoTime();
     
     /*
-     *  Initialize variables
+     *  Initialize Environment
      */
-    String inputDir, outputDir;
-    inputDir = outputDir = "";
-    final float NANO2SEC = 1000000000; // for converting nanoseconds to seconds
-    int numThreads = 10; // default number of threads if not specified at runtime
-    int numFiles = 0; // counts files being processed
-    
-    /*
-     * Retrieve and parse passed in parameters
-     */
-    for (int i = 0; i < args.length; i++) {
-
-      if (args[i].substring(0, 1).equals("-")) {
-        String catchMe = args[i].substring(1, 2);
-        
-        if (catchMe.equals("i")) {
-          inputDir = args[i + 1];
-        } else if (catchMe.equals("o")) {
-          outputDir = args[i + 1];
-        } else if (catchMe.equals("t")) {
-          numThreads = Integer.parseInt(args[i + 1]);
-          System.out.print("Number of threads: " + numThreads);
-        } else {
-          // Nothing
-        }
-      }
-    }
+    Environment appEnv = new Environment(args);
+    int fileCount = 0; // counts files being processed
+    int maxFiles = 0; // Total number of files in input directory
     
     /* 
-     * Retrieve list of files from input director
+     * Retrieve files from input directory
      */
-    File f = new File(inputDir); // current directory
-    File[] files = f.listFiles();
-    int maxFiles = files.length;
-    
-    Indexer_Parser parseHTML = new Indexer_Parser();
-    Indexer_IndexedHTML indexPage = new Indexer_IndexedHTML();
-    while (numFiles < maxFiles) {
-      //parseHTML.setInputPath(files[numFiles].getCanonicalPath());
-      //parseHTML.setIndexPath(outputDir);
-      parseHTML = new Indexer_Parser(files[numFiles].getCanonicalPath(), outputDir, numFiles);
-      indexPage = parseHTML.extractText();
-      Indexer_Obj.index(indexPage, outputDir);
-      numFiles++;
+    if (appEnv.getInputDir() != "") {
+      File file = new File( appEnv.getInputDir() );
+      File[] files = file.listFiles();
+      maxFiles = files.length;
+      Indexer_Parser parseHTML = new Indexer_Parser();
+      Indexer_IndexedHTML indexPage = new Indexer_IndexedHTML();
+      
+      // Process files in input directory
+      while (fileCount < maxFiles) {
+        parseHTML = new Indexer_Parser(files[fileCount].getCanonicalPath(), appEnv.getOutputDir() , fileCount);
+        indexPage = parseHTML.extractText();
+        Indexer_Obj.index(indexPage, appEnv.getOutputDir() );
+        fileCount++;
+        endTime = System.nanoTime();
+        float duration = (endTime - startTime) / NANO2SEC;  //divide by 1000000 to get milliseconds
+        System.out.print("Number of files processed: " + fileCount + " | Running time:" + duration + "(secs)\n");
+      }
+      
+      // Processing Complete. Output summary.
       endTime = System.nanoTime();
       float duration = (endTime - startTime) / NANO2SEC;  //divide by 1000000 to get milliseconds
-      System.out.print("Number of files processed: " + numFiles + " | Running time:" + duration + "(secs)\n");
+      System.out.print("Time to complete:" + duration + "(secs)\n");
+    } else {
+      System.err.println("No input directory specified. Exiting.");
+      System.exit(-1);
     }
-
-    System.out.print("outputDir: " + outputDir);
-    
-     /*
-      * end Timer
-      */
-    endTime = System.nanoTime();
-    float duration = (endTime - startTime) / NANO2SEC;  //divide by 1000000 to get milliseconds
-    System.out.print("Time to complete:" + duration + "(secs)\n");
-    
   }
-
 }

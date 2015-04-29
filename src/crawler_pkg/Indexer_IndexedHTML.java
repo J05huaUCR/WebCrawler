@@ -1,3 +1,15 @@
+/*  =============================================================================
+  Object Class to hold indexed values from the parsed HTML
+  
+  @version  0.1
+  @author   Joshua Potter
+  @SID      860159747
+  @author   Ashwin Ramadevanahalli
+  @SID      861186399
+  @classID  CS242
+  @title    Crawler & Indexer Project
+  ========================================================================== */
+
 package crawler_pkg;
 
 public class Indexer_IndexedHTML {
@@ -13,7 +25,7 @@ public class Indexer_IndexedHTML {
   }
   
   public Indexer_IndexedHTML(String t, String b, String u) {
-    // constructor with parameters passed in
+    // constructor with parameters
     this.setTitle(t);
     this.setBody(b);
     this.setURL(u);
