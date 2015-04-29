@@ -120,10 +120,17 @@ public class Crawler {
      
      // Write to Disk
      // <<<<<<<<<<<<<<<<<<<<<<<<<< NEED TO ADD IN URL of DOC in the DOC
+     /*
+      * String html = "<root><child></child><child></chidl></root>";
+      * Document doc = Jsoup.parse(html);
+    doc.select("root").first().children().first().before("<newChild></newChild>");
+    System.out.println(doc.body().html());
+      */
      writeHTMLdoc(htmlContent, appEnv);
      
    } catch (IOException| NullPointerException ee) {
      //ee.printStackTrace();
+     System.err.println("unable to download /write: " + tempCrawlerURL);
    }
  }
  
